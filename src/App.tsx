@@ -522,9 +522,9 @@ export default function App() {
             <div className="flex flex-col items-end gap-1">
               <p className="text-[9px] uppercase tracking-widest text-zinc-500 font-medium">Client</p>
               <img
-                src="/metro.jpeg"
+                src="/metro.png"
                 alt="Metro"
-                className="h-9 w-9 rounded-lg object-cover"
+                className="h-9 w-auto object-contain"
               />
             </div>
           </div>
