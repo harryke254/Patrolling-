@@ -1,0 +1,5 @@
+{
+  "name": "Patrol Log Form",
+  "description": "A mobile-friendly form to log patrol stations and zone times, generating a formatted text output.",
+  "requestFramePermissions": []
+}
