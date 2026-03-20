@@ -1,20 +1,16 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/297ea599-d1f4-40e4-9300-4e602eb92bdd
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+⚡ itchyfingers codes
+​🌐 Full-Stack Engineering & System Optimization
+​Crafting seamless digital experiences and high-performance scripts.
+​Languages: Python, Bash, JavaScript
+​Environments: Linux (Kali/Termux), Node.js, Web Technologies
+​Focus: Automation Bots, Network Monitoring, & Responsive Web Design
+​🛠️ Current Projects
+​Automation: Developing custom WhatsApp business integration tools.
+​Performance: Engineering system optimization engines for low-latency environments.
+​Media: Building dedicated platforms for high-fidelity music streaming and distribution.
+​🔊 Beyond the Code
+​When the terminal is closed, I'm likely curating professional soundscapes or mastering digital visuals. I believe in the intersection of technical precision and creative expression.
+​"Efficiency is the foundation of innovation."
+​📈 Let's Connect
+​Skills: System Administration | API Integration | UI/UX Design
+​Status: Building the future, one script at a time.
