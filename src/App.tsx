@@ -160,6 +160,20 @@ function generateLogText(stations: StationLog[]): string {
   }).join('\n\n').trim();
 }
 
+// ─── Zone colour palette (by index) ──────────────────────────────────────────
+
+const ZONE_COLORS = [
+  { label: 'text-violet-400',  nowBtn: 'text-violet-400 hover:text-violet-300 bg-violet-500/10',  input: 'bg-violet-950/50 border-violet-800/60 text-violet-300 placeholder:text-violet-900 focus:ring-violet-500',  preview: 'text-violet-400' },
+  { label: 'text-emerald-400', nowBtn: 'text-emerald-400 hover:text-emerald-300 bg-emerald-500/10', input: 'bg-emerald-950/50 border-emerald-800/60 text-emerald-300 placeholder:text-emerald-900 focus:ring-emerald-500', preview: 'text-emerald-400' },
+  { label: 'text-sky-400',     nowBtn: 'text-sky-400 hover:text-sky-300 bg-sky-500/10',            input: 'bg-sky-950/50 border-sky-800/60 text-sky-300 placeholder:text-sky-900 focus:ring-sky-500',                preview: 'text-sky-400' },
+  { label: 'text-amber-400',   nowBtn: 'text-amber-400 hover:text-amber-300 bg-amber-500/10',      input: 'bg-amber-950/50 border-amber-800/60 text-amber-300 placeholder:text-amber-900 focus:ring-amber-500',        preview: 'text-amber-400' },
+  { label: 'text-rose-400',    nowBtn: 'text-rose-400 hover:text-rose-300 bg-rose-500/10',         input: 'bg-rose-950/50 border-rose-800/60 text-rose-300 placeholder:text-rose-900 focus:ring-rose-500',            preview: 'text-rose-400' },
+];
+
+function zoneColor(zIdx: number) {
+  return ZONE_COLORS[zIdx % ZONE_COLORS.length];
+}
+
 // ─── Colored Preview ─────────────────────────────────────────────────────────
 
 function ColoredPreview({ stations, size = 'sm' }: { stations: StationLog[]; size?: 'sm' | 'xs' }) {
@@ -171,15 +185,18 @@ function ColoredPreview({ stations, size = 'sm' }: { stations: StationLog[]; siz
           <div className="text-zinc-300">
             Station: <span className="text-zinc-100 font-semibold">{s.name || '[Station Name]'}</span>
           </div>
-          {s.zones.map(z => (
-            <div key={z.id} className="text-zinc-500">
-              <span className="text-zinc-400">{z.name}</span>
-              {'  '}
-              <span className="text-emerald-400">{z.startTime || '--:--'}</span>
-              <span className="text-zinc-600"> – </span>
-              <span className="text-amber-400">{z.endTime || '--:--'}</span>
-            </div>
-          ))}
+          {s.zones.map((z, zIdx) => {
+            const c = zoneColor(zIdx);
+            return (
+              <div key={z.id} className="text-zinc-500">
+                <span className="text-zinc-400">{z.name}</span>
+                {'  '}
+                <span className={c.preview}>{z.startTime || '--:--'}</span>
+                <span className="text-zinc-600"> – </span>
+                <span className={c.preview}>{z.endTime || '--:--'}</span>
+              </div>
+            );
+          })}
         </div>
       ))}
     </div>
@@ -298,7 +315,9 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
             </div>
 
             <div className="space-y-3">
-              {station.zones.map(zone => (
+              {station.zones.map((zone, zIdx) => {
+                const c = zoneColor(zIdx);
+                return (
                 <div key={zone.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 space-y-4 transition-all hover:border-zinc-700">
                   <div className="flex items-center gap-2">
                     <input
@@ -310,12 +329,12 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Start time — green */}
+                    {/* Start time */}
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Start</label>
+                        <label className={`text-xs font-semibold uppercase tracking-wider ${c.label}`}>Start</label>
                         <button onClick={() => setTimeNow(station.id, zone.id, 'startTime')}
-                          className="text-[10px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 uppercase tracking-wider font-semibold bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                          className={`text-[10px] flex items-center gap-1 uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded ${c.nowBtn}`}>
                           <Clock size={10} /> Now
                         </button>
                       </div>
@@ -323,15 +342,15 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
                         type="text" inputMode="numeric" placeholder="00:00" maxLength={5}
                         value={zone.startTime}
                         onChange={e => handleTimeInput(station.id, zone.id, 'startTime', e.target.value)}
-                        className="w-full bg-emerald-950/50 border border-emerald-800/60 rounded-lg px-3 py-2.5 text-sm text-emerald-300 placeholder:text-emerald-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all text-center tracking-widest font-mono"
+                        className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-1 transition-all text-center tracking-widest font-mono ${c.input}`}
                       />
                     </div>
-                    {/* End time — amber */}
+                    {/* End time */}
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="text-xs font-semibold text-amber-500 uppercase tracking-wider">End</label>
+                        <label className={`text-xs font-semibold uppercase tracking-wider ${c.label}`}>End</label>
                         <button onClick={() => setTimeNow(station.id, zone.id, 'endTime')}
-                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 uppercase tracking-wider font-semibold bg-amber-500/10 px-1.5 py-0.5 rounded">
+                          className={`text-[10px] flex items-center gap-1 uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded ${c.nowBtn}`}>
                           <Clock size={10} /> Now
                         </button>
                       </div>
@@ -339,7 +358,7 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
                         type="text" inputMode="numeric" placeholder="00:00" maxLength={5}
                         value={zone.endTime}
                         onChange={e => handleTimeInput(station.id, zone.id, 'endTime', e.target.value)}
-                        className="w-full bg-amber-950/50 border border-amber-800/60 rounded-lg px-3 py-2.5 text-sm text-amber-300 placeholder:text-amber-900 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all text-center tracking-widest font-mono"
+                        className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-1 transition-all text-center tracking-widest font-mono ${c.input}`}
                       />
                     </div>
                   </div>
@@ -351,7 +370,8 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
