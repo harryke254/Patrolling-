@@ -160,6 +160,32 @@ function generateLogText(stations: StationLog[]): string {
   }).join('\n\n').trim();
 }
 
+// ─── Colored Preview ─────────────────────────────────────────────────────────
+
+function ColoredPreview({ stations, size = 'sm' }: { stations: StationLog[]; size?: 'sm' | 'xs' }) {
+  const sizeClass = size === 'sm' ? 'text-sm' : 'text-xs';
+  return (
+    <div className={`${sizeClass} font-mono leading-relaxed`}>
+      {stations.map((s, si) => (
+        <div key={s.id} className={si > 0 ? 'mt-4' : ''}>
+          <div className="text-zinc-300">
+            Station: <span className="text-zinc-100 font-semibold">{s.name || '[Station Name]'}</span>
+          </div>
+          {s.zones.map(z => (
+            <div key={z.id} className="text-zinc-500">
+              <span className="text-zinc-400">{z.name}</span>
+              {'  '}
+              <span className="text-emerald-400">{z.startTime || '--:--'}</span>
+              <span className="text-zinc-600"> – </span>
+              <span className="text-amber-400">{z.endTime || '--:--'}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── Shared Components ────────────────────────────────────────────────────────
 
 function CopyButton({ text, size = 'sm' }: { text: string; size?: 'sm' | 'xs' }) {
@@ -342,9 +368,7 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
           <CopyButton text={generateLogText(stations)} />
         </div>
         <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
-          <pre className="text-sm text-zinc-300 font-mono whitespace-pre-wrap leading-relaxed">
-            {generateLogText(stations)}
-          </pre>
+          <ColoredPreview stations={stations} size="sm" />
         </div>
       </div>
 
@@ -468,7 +492,7 @@ function HistoryCard({ entry, onDelete }: { entry: { shiftId: string; stations: 
             </div>
           ))}
           <div className="px-5 pb-5 pt-3 bg-zinc-950/40">
-            <pre className="text-xs text-zinc-400 font-mono whitespace-pre-wrap leading-relaxed">{logText}</pre>
+            <ColoredPreview stations={entry.stations} size="xs" />
           </div>
         </div>
       )}
