@@ -284,23 +284,38 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    {(['startTime', 'endTime'] as const).map(field => (
-                      <div key={field} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <label className="text-xs font-medium text-zinc-500">{field === 'startTime' ? 'Start' : 'End'}</label>
-                          <button onClick={() => setTimeNow(station.id, zone.id, field)}
-                            className="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 uppercase tracking-wider font-semibold bg-indigo-500/10 px-1.5 py-0.5 rounded">
-                            <Clock size={10} /> Now
-                          </button>
-                        </div>
-                        <input
-                          type="text" inputMode="numeric" placeholder="00:00" maxLength={5}
-                          value={zone[field]}
-                          onChange={e => handleTimeInput(station.id, zone.id, field, e.target.value)}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-center tracking-widest font-mono"
-                        />
+                    {/* Start time — green */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Start</label>
+                        <button onClick={() => setTimeNow(station.id, zone.id, 'startTime')}
+                          className="text-[10px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 uppercase tracking-wider font-semibold bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                          <Clock size={10} /> Now
+                        </button>
                       </div>
-                    ))}
+                      <input
+                        type="text" inputMode="numeric" placeholder="00:00" maxLength={5}
+                        value={zone.startTime}
+                        onChange={e => handleTimeInput(station.id, zone.id, 'startTime', e.target.value)}
+                        className="w-full bg-emerald-950/50 border border-emerald-800/60 rounded-lg px-3 py-2.5 text-sm text-emerald-300 placeholder:text-emerald-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all text-center tracking-widest font-mono"
+                      />
+                    </div>
+                    {/* End time — amber */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs font-semibold text-amber-500 uppercase tracking-wider">End</label>
+                        <button onClick={() => setTimeNow(station.id, zone.id, 'endTime')}
+                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 uppercase tracking-wider font-semibold bg-amber-500/10 px-1.5 py-0.5 rounded">
+                          <Clock size={10} /> Now
+                        </button>
+                      </div>
+                      <input
+                        type="text" inputMode="numeric" placeholder="00:00" maxLength={5}
+                        value={zone.endTime}
+                        onChange={e => handleTimeInput(station.id, zone.id, 'endTime', e.target.value)}
+                        className="w-full bg-amber-950/50 border border-amber-800/60 rounded-lg px-3 py-2.5 text-sm text-amber-300 placeholder:text-amber-900 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all text-center tracking-widest font-mono"
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-end items-center pt-3 border-t border-zinc-800/50">
