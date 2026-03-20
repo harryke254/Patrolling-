@@ -1,60 +1,55 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=24&pause=500&color=00FF41&center=true&vCenter=true&width=500&lines=I+AM+A+KENYAN+CERTIFIED+PROGRAMMER;⚡+itchyfingers+codes+⚡;UPDATING+THE+FUTURE...;SCRIPTS+BY+THUNDER" alt="Typing SVG" />
+  <img src="https://img.shields.io/badge/𝙄%20𝘼𝙈%20𝘼%20𝙆𝙀𝙉𝙔𝘼𝙉-𝘾𝙀𝙍𝙏𝙄𝙁𝙄𝙀𝘿%20𝙋𝙍𝙊𝙂𝙍𝘼𝙈𝙈𝙀𝙍-green?colorA=%2300ff15ff&colorB=%23ff0000ec&style=for-the-badge">
 </p>
 
-<h1 align="center">
-  <img src="https://see.fontimg.com/api/renderfont4/6YLRM/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjRkZGRkZGIiwiYmdjIjoiIzAwMDAwMCIsInQiOjF9/V0VMQ09NRSBUTyBNWSBXT1JMRA/pdark.png" alt="Stylized Welcome">
-</h1>
+<h3 align="center">
+  <img src="https://emoji.discord.st/emojis/768b108d-274f-4f44-a634-8477b16efce7.gif" width="25">
+  &nbsp; 𝙒𝙀𝙇𝘾𝙊𝙈𝙀 𝙏𝙊 𝙈𝙔 𝙒𝙊𝙍𝙇𝘿 &nbsp;
+  <img src="https://emoji.discord.st/emojis/768b108d-274f-4f44-a634-8477b16efce7.gif" width="25">
+</h3>
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=harryke254&show_icons=true&theme=radical" alt="GitHub Stats">
+  <img src="https://readme-typing-svg.herokuapp.com?color=%234d8c33ff&center=true&vCenter=true&width=600&lines=SUCKY+HACKER+PREMIUM;+ITCHYFINGERS+CODES;HAPPY+TUNNELING;REMEMBER+WE+ONLY;PROTECT+WHAT'S+OURS;WELCOME+ABOARD" />
 </p>
-
----
-
-### ⚡ itchyfingers codes
-**Full-Stack Engineering & Creative Digital Solutions.**
-
-* 🛠️ **Projects:** Custom automation bots and media distribution platforms.
-* 🔊 **Creative:** Professional music production and high-standard digital visuals.
-* 🚀 **Focus:** Crafting responsive web experiences and high-performance scripts.
-
----
-
-### 📱 CONTACT ME
-
-<p align="left">
-  <a href="https://t.me/Sucky_hacker">
-    <img src="https://img.shields.io/badge/Telegram-CLICK%20HERE-blue?style=for-the-badge&logo=telegram">
-  </a>
-  <a href="https://wa.me/qr/Y4WGGXAIN4VKG1">
-    <img src="https://img.shields.io/badge/WhatsApp-CLICK%20HERE-green?style=for-the-badge&logo=whatsapp">
-  </a>
-</p>
-
----
 
 <p align="center">
-  <i>"Building the future, one script at a time."</i>
+  <img src="https://github.com/DalpatRathore/dalpatrathore/blob/main/assets/images/line-1.svg" width="100%">
 </p>
 
 ---
 
-### 📈 GitHub Statistics
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=harryke254&layout=compact&theme=radical" />
-</p>
-
----
-
-### 📱 LET'S CONNECT
-
-<p align="left">
-  <a href="https://t.me/itchyfingers">
-    <img src="https://img.shields.io/badge/Telegram-CLICK%20HERE-blue?style=for-the-badge&logo=telegram">
+<h3><b><i>🏆 Github Statistics :</i></b></h3>
+<p align="center">
+  <a href="https://github.com/harryke254">
+    <img width="550" src="https://github-profile-trophy.vercel.app/?username=harryke254&theme=dracula&no-frame=true&title=Followers,Stars,Commit,Repository,Issues"/>
   </a>
-  <a href="https://wa.me/qr/Y4WGGXAIN4VKG1">
-    <img src="https://img.shields.io/badge/WhatsApp-CLICK%20HERE-green?style=for-the-badge&logo=whatsapp">
+</p>
+
+<p align="center"> 
+ 𝚅𝙸𝚂𝙸𝚃𝙾𝚁𝚂 𝙲𝙾𝚄𝙽𝚃
+ <img src="https://profile-counter.glitch.me/harryke254/count.svg" alt="Visitors">
+</p>
+
+---
+
+### ⚡ ABOUT ME
+* 🛠️ **Full-Stack Engineering:** Crafting seamless digital experiences and high-performance code.
+* 🔊 **Creative Production:** Professional soundscapes and high-standard digital visuals.
+* 🚀 **Current Focus:** Building responsive web platforms and automation tools.
+
+---
+
+### 📱 TELEGRAM
+<p align="center">
+  <a href="https://t.me/Sucky_hacker" target="_blank">
+    <img src="https://img.shields.io/static/v1?style=for-the-badge&logo=Telegram&label=Telegram&message=Click%20Here&color=blue">
+  </a>
+</p>
+
+### 💬 WHATSAPP 
+<p align="center">
+  <a href="https://wa.me/qr/Y4WGGXAIN4VKG1" target="_blank">
+    <img src="https://img.shields.io/static/v1?style=for-the-badge&logo=Whatsapp&label=Whatsapp&message=Click%20Here&color=006400">
   </a>
 </p>
 
