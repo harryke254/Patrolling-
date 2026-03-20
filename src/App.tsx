@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Plus, Trash2, Clock, Copy, CheckCircle2, Wifi,
-  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send, Pencil
+  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send
 } from 'lucide-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -436,17 +436,32 @@ function HistoryCard({ entry, onDelete, onEdit }: {
   const logText = generateLogText(entry.stations);
   const hasData = entry.stations.some(s => s.name || s.zones.some(z => z.startTime || z.endTime));
 
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didLongPress = useRef(false);
+
+  const startPress = () => {
+    didLongPress.current = false;
+    longPressTimer.current = setTimeout(() => {
+      didLongPress.current = true;
+      setEditDate(entry.shiftId.slice(0, 10));
+      setEditType(entry.shiftId[11] as 'D' | 'N');
+      setEditing(true);
+      setConfirmDelete(false);
+    }, 600);
+  };
+
+  const cancelPress = () => {
+    if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+  };
+
+  const handleCardClick = () => {
+    if (didLongPress.current) { didLongPress.current = false; return; }
+    if (!editing) setExpanded(e => !e);
+  };
+
   const handleDelete = (e: React.MouseEvent) => { e.stopPropagation(); setConfirmDelete(true); };
   const confirmDeleteAction = (e: React.MouseEvent) => { e.stopPropagation(); onDelete(entry.shiftId); };
   const cancelDelete = (e: React.MouseEvent) => { e.stopPropagation(); setConfirmDelete(false); };
-
-  const openEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditDate(entry.shiftId.slice(0, 10));
-    setEditType(entry.shiftId[11] as 'D' | 'N');
-    setEditing(true);
-    setConfirmDelete(false);
-  };
 
   const saveEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -458,8 +473,13 @@ function HistoryCard({ entry, onDelete, onEdit }: {
   return (
     <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
       <button
-        onClick={() => { if (!editing) setExpanded(e => !e); }}
-        className="w-full p-5 flex items-center justify-between gap-4 text-left hover:bg-zinc-800/40 transition-colors">
+        onClick={handleCardClick}
+        onMouseDown={startPress}
+        onMouseUp={cancelPress}
+        onMouseLeave={cancelPress}
+        onTouchStart={startPress}
+        onTouchEnd={cancelPress}
+        className="w-full p-5 flex items-center justify-between gap-4 text-left hover:bg-zinc-800/40 transition-colors select-none">
         <div className="space-y-0.5 min-w-0">
           <p className="text-[10px] uppercase tracking-widest font-semibold text-indigo-400">
             {getShiftMeta(entry.shiftId).type}
@@ -478,11 +498,6 @@ function HistoryCard({ entry, onDelete, onEdit }: {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {hasData && <CopyButton text={logText} size="xs" />}
-          <button
-            onClick={openEdit}
-            className="text-zinc-600 hover:text-indigo-400 p-1.5 rounded-md hover:bg-indigo-500/10 transition-colors">
-            <Pencil size={14} />
-          </button>
           {!confirmDelete ? (
             <button
               onClick={handleDelete}
