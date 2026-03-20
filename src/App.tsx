@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Plus, Trash2, Clock, Copy, CheckCircle2, Wifi,
-  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send
+  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send, Pencil
 } from 'lucide-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -422,32 +422,43 @@ function ShiftLogView({ shiftId, onSubmit }: { shiftId: string; onSubmit: () => 
 
 // ─── History Card ─────────────────────────────────────────────────────────────
 
-function HistoryCard({ entry, onDelete }: { entry: { shiftId: string; stations: StationLog[] }; onDelete: (shiftId: string) => void }) {
+function HistoryCard({ entry, onDelete, onEdit }: {
+  entry: { shiftId: string; stations: StationLog[] };
+  onDelete: (shiftId: string) => void;
+  onEdit: (oldShiftId: string, newShiftId: string) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editDate, setEditDate] = useState(entry.shiftId.slice(0, 10));
+  const [editType, setEditType] = useState<'D' | 'N'>(entry.shiftId[11] as 'D' | 'N');
   const totalZones = entry.stations.reduce((n, s) => n + s.zones.length, 0);
   const logText = generateLogText(entry.stations);
   const hasData = entry.stations.some(s => s.name || s.zones.some(z => z.startTime || z.endTime));
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setConfirmDelete(true);
-  };
+  const handleDelete = (e: React.MouseEvent) => { e.stopPropagation(); setConfirmDelete(true); };
+  const confirmDeleteAction = (e: React.MouseEvent) => { e.stopPropagation(); onDelete(entry.shiftId); };
+  const cancelDelete = (e: React.MouseEvent) => { e.stopPropagation(); setConfirmDelete(false); };
 
-  const confirmDeleteAction = (e: React.MouseEvent) => {
+  const openEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDelete(entry.shiftId);
-  };
-
-  const cancelDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    setEditDate(entry.shiftId.slice(0, 10));
+    setEditType(entry.shiftId[11] as 'D' | 'N');
+    setEditing(true);
     setConfirmDelete(false);
+  };
+
+  const saveEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newShiftId = `${editDate}-${editType}`;
+    if (newShiftId !== entry.shiftId) onEdit(entry.shiftId, newShiftId);
+    setEditing(false);
   };
 
   return (
     <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
       <button
-        onClick={() => setExpanded(e => !e)}
+        onClick={() => { if (!editing) setExpanded(e => !e); }}
         className="w-full p-5 flex items-center justify-between gap-4 text-left hover:bg-zinc-800/40 transition-colors">
         <div className="space-y-0.5 min-w-0">
           <p className="text-[10px] uppercase tracking-widest font-semibold text-indigo-400">
@@ -467,6 +478,11 @@ function HistoryCard({ entry, onDelete }: { entry: { shiftId: string; stations: 
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {hasData && <CopyButton text={logText} size="xs" />}
+          <button
+            onClick={openEdit}
+            className="text-zinc-600 hover:text-indigo-400 p-1.5 rounded-md hover:bg-indigo-500/10 transition-colors">
+            <Pencil size={14} />
+          </button>
           {!confirmDelete ? (
             <button
               onClick={handleDelete}
@@ -475,12 +491,8 @@ function HistoryCard({ entry, onDelete }: { entry: { shiftId: string; stations: 
             </button>
           ) : (
             <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-              <button onClick={cancelDelete} className="text-xs px-2 py-1 rounded-md bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors">
-                No
-              </button>
-              <button onClick={confirmDeleteAction} className="text-xs px-2 py-1 rounded-md bg-red-600 hover:bg-red-500 text-white transition-colors">
-                Delete
-              </button>
+              <button onClick={cancelDelete} className="text-xs px-2 py-1 rounded-md bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors">No</button>
+              <button onClick={confirmDeleteAction} className="text-xs px-2 py-1 rounded-md bg-red-600 hover:bg-red-500 text-white transition-colors">Delete</button>
             </div>
           )}
           <span className="text-zinc-500">
@@ -488,6 +500,45 @@ function HistoryCard({ entry, onDelete }: { entry: { shiftId: string; stations: 
           </span>
         </div>
       </button>
+
+      {/* Inline date editor */}
+      {editing && (
+        <div className="border-t border-zinc-800 px-5 py-4 space-y-4" onClick={e => e.stopPropagation()}>
+          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Edit Patrol Date</p>
+          <div className="flex gap-3 items-center">
+            <input
+              type="date"
+              value={editDate}
+              onChange={e => setEditDate(e.target.value)}
+              className="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
+            />
+            <div className="flex rounded-xl overflow-hidden border border-zinc-700">
+              <button
+                onClick={() => setEditType('D')}
+                className={`px-3 py-2.5 text-xs font-semibold transition-colors ${editType === 'D' ? 'bg-amber-500 text-white' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200'}`}>
+                Day
+              </button>
+              <button
+                onClick={() => setEditType('N')}
+                className={`px-3 py-2.5 text-xs font-semibold transition-colors ${editType === 'N' ? 'bg-indigo-600 text-white' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200'}`}>
+                Night
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={e => { e.stopPropagation(); setEditing(false); }}
+              className="flex-1 py-2.5 rounded-xl border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors text-sm font-medium">
+              Cancel
+            </button>
+            <button
+              onClick={saveEdit}
+              className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors text-sm font-semibold">
+              Save
+            </button>
+          </div>
+        </div>
+      )}
 
       {expanded && (
         <div className="border-t border-zinc-800">
@@ -530,6 +581,18 @@ function HistoryView({ activeShiftId }: { activeShiftId: string }) {
     setShifts(prev => prev.filter(s => s.shiftId !== shiftId));
   };
 
+  const handleEdit = (oldShiftId: string, newShiftId: string) => {
+    const raw = localStorage.getItem(storageKey(USER_ID, oldShiftId));
+    if (!raw) return;
+    localStorage.setItem(storageKey(USER_ID, newShiftId), raw);
+    localStorage.removeItem(storageKey(USER_ID, oldShiftId));
+    setShifts(prev =>
+      prev
+        .map(s => s.shiftId === oldShiftId ? { ...s, shiftId: newShiftId } : s)
+        .sort((a, b) => b.shiftId.localeCompare(a.shiftId))
+    );
+  };
+
   if (shifts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -547,7 +610,7 @@ function HistoryView({ activeShiftId }: { activeShiftId: string }) {
   return (
     <div className="space-y-3">
       {shifts.map(entry => (
-        <HistoryCard key={entry.shiftId} entry={entry} onDelete={handleDelete} />
+        <HistoryCard key={entry.shiftId} entry={entry} onDelete={handleDelete} onEdit={handleEdit} />
       ))}
     </div>
   );
