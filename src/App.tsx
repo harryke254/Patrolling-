@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Plus, Trash2, Clock, Copy, CheckCircle2, Wifi,
-  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send
+  History, ChevronLeft, ChevronDown, ChevronUp, Shield, Send, Pencil
 } from 'lucide-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -658,12 +658,35 @@ function HistoryView({ activeShiftId }: { activeShiftId: string }) {
 export default function App() {
   const [view, setView] = useState<'log' | 'history'>('log');
   const [activeShiftId, setActiveShiftId] = useState<string>(getOrCreateActiveShiftId);
+  const [editingDate, setEditingDate] = useState(false);
+  const [editDate, setEditDate] = useState('');
+  const [editType, setEditType] = useState<'D' | 'N'>('D');
 
   const handleSubmit = () => {
     const newId = createNewShiftId(activeShiftId);
     clearActiveShiftId();
     localStorage.setItem(ACTIVE_SHIFT_KEY, newId);
     setActiveShiftId(newId);
+  };
+
+  const openDateEditor = () => {
+    setEditDate(activeShiftId.slice(0, 10));
+    setEditType(activeShiftId[11] as 'D' | 'N');
+    setEditingDate(true);
+  };
+
+  const saveDateEdit = () => {
+    const newId = `${editDate}-${editType}`;
+    if (newId !== activeShiftId) {
+      const raw = localStorage.getItem(storageKey(USER_ID, activeShiftId));
+      if (raw) {
+        localStorage.setItem(storageKey(USER_ID, newId), raw);
+        localStorage.removeItem(storageKey(USER_ID, activeShiftId));
+      }
+      localStorage.setItem(ACTIVE_SHIFT_KEY, newId);
+      setActiveShiftId(newId);
+    }
+    setEditingDate(false);
   };
 
   return (
@@ -710,22 +733,69 @@ export default function App() {
           </div>
 
           {/* Shift badge */}
-          <div className={`rounded-xl border px-4 py-3 ${
+          <div className={`rounded-xl border overflow-hidden ${
             view === 'history' ? 'bg-zinc-900/50 border-zinc-800' : 'bg-indigo-500/10 border-indigo-500/25'
           }`}>
             {view === 'log' ? (
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <p className="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold">
-                    {getShiftMeta(activeShiftId).type}
-                  </p>
-                  <p className="text-sm font-semibold text-zinc-100">{getShiftMeta(activeShiftId).date}</p>
-                  <p className="text-xs font-mono text-zinc-400">{getShiftMeta(activeShiftId).times}</p>
+              <>
+                <div className="flex items-center justify-between px-4 py-3">
+                  <div className="space-y-0.5">
+                    <p className="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold">
+                      {getShiftMeta(activeShiftId).type}
+                    </p>
+                    <p className="text-sm font-semibold text-zinc-100">{getShiftMeta(activeShiftId).date}</p>
+                    <p className="text-xs font-mono text-zinc-400">{getShiftMeta(activeShiftId).times}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={openDateEditor}
+                      className="text-zinc-500 hover:text-indigo-400 p-1.5 rounded-lg hover:bg-indigo-500/10 transition-colors"
+                      title="Edit patrol date">
+                      <Pencil size={14} />
+                    </button>
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)] animate-pulse" />
+                  </div>
                 </div>
-                <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)] animate-pulse" />
-              </div>
+                {editingDate && (
+                  <div className="border-t border-indigo-500/20 px-4 py-4 space-y-3 bg-zinc-900/60">
+                    <p className="text-xs text-zinc-400 uppercase tracking-wider">Edit Patrol Date</p>
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="date"
+                        value={editDate}
+                        onChange={e => setEditDate(e.target.value)}
+                        className="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
+                      />
+                      <div className="flex rounded-xl overflow-hidden border border-zinc-700">
+                        <button
+                          onClick={() => setEditType('D')}
+                          className={`px-3 py-2.5 text-xs transition-colors ${editType === 'D' ? 'bg-amber-500 text-white' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200'}`}>
+                          Day
+                        </button>
+                        <button
+                          onClick={() => setEditType('N')}
+                          className={`px-3 py-2.5 text-xs transition-colors ${editType === 'N' ? 'bg-indigo-600 text-white' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200'}`}>
+                          Night
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setEditingDate(false)}
+                        className="flex-1 py-2.5 rounded-xl border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors text-sm">
+                        Cancel
+                      </button>
+                      <button
+                        onClick={saveDateEdit}
+                        className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors text-sm">
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-4 py-3">
                 <History size={14} className="text-zinc-500" />
                 <p className="text-sm text-zinc-400">Patrol history</p>
               </div>
