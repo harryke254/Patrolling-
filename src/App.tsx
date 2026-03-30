@@ -79,11 +79,33 @@ const SHIFT_KEY_PREFIX = `patrol_log_${USER_ID}_`;
 const ACTIVE_SHIFT_KEY = `patrol_active_shift_${USER_ID}`;
 
 function getOrCreateActiveShiftId(): string {
+  const currentId = getShiftId();
   let id = localStorage.getItem(ACTIVE_SHIFT_KEY);
+
   if (!id) {
-    id = getShiftId();
-    localStorage.setItem(ACTIVE_SHIFT_KEY, id);
+    localStorage.setItem(ACTIVE_SHIFT_KEY, currentId);
+    return currentId;
   }
+
+  // If the stored shift no longer matches today's current shift,
+  // check if it has any real patrol data. If it's empty, advance to today.
+  if (id !== currentId) {
+    try {
+      const raw = localStorage.getItem(storageKey(USER_ID, id));
+      const parsed = raw ? JSON.parse(raw) : null;
+      const hasData = Array.isArray(parsed) && parsed.some((s: StationLog) =>
+        s.name || s.zones.some((z: ZoneLog) => z.startTime || z.endTime)
+      );
+      if (!hasData) {
+        localStorage.setItem(ACTIVE_SHIFT_KEY, currentId);
+        return currentId;
+      }
+    } catch {
+      localStorage.setItem(ACTIVE_SHIFT_KEY, currentId);
+      return currentId;
+    }
+  }
+
   return id;
 }
 
