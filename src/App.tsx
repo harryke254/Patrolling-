@@ -151,6 +151,29 @@ function loadShift(shiftId: string): StationLog[] {
 
 function saveShift(shiftId: string, data: StationLog[]) {
   try { localStorage.setItem(storageKey(USER_ID, shiftId), JSON.stringify(data)); } catch {}
+  syncToBackend(shiftId, data);
+}
+
+function syncToBackend(shiftId: string, data: StationLog[]) {
+  fetch(`/api/shifts/${encodeURIComponent(shiftId)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: USER_ID, data }),
+  }).catch(() => {});
+}
+
+async function restoreFromBackend() {
+  try {
+    const res = await fetch(`/api/shifts/all?userId=${encodeURIComponent(USER_ID)}`);
+    if (!res.ok) return;
+    const { shifts } = await res.json() as { shifts: { shiftId: string; data: StationLog[] }[] };
+    for (const { shiftId, data } of shifts) {
+      const key = storageKey(USER_ID, shiftId);
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, JSON.stringify(data));
+      }
+    }
+  } catch {}
 }
 
 function deleteShift(shiftId: string) {
@@ -671,6 +694,10 @@ export default function App() {
   const [editingDate, setEditingDate] = useState(false);
   const [editDate, setEditDate] = useState('');
   const [editType, setEditType] = useState<'D' | 'N'>('D');
+
+  useEffect(() => {
+    restoreFromBackend();
+  }, []);
 
   const handleSubmit = () => {
     const newId = createNewShiftId(activeShiftId);
