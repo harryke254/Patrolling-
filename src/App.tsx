@@ -97,6 +97,16 @@ function getOrCreateActiveShiftId(): string {
         s.name || s.zones.some((z: ZoneLog) => z.startTime || z.endTime)
       );
       if (!hasData) {
+        // Before advancing to currentId, check if it already has submitted data.
+        // If it does, keep the blank stored id (it was created as a fresh slot after a submission).
+        const currentRaw = localStorage.getItem(storageKey(USER_ID, currentId));
+        const currentParsed = currentRaw ? JSON.parse(currentRaw) : null;
+        const currentHasData = Array.isArray(currentParsed) && currentParsed.some((s: StationLog) =>
+          s.name || s.zones.some((z: ZoneLog) => z.startTime || z.endTime)
+        );
+        if (currentHasData) {
+          return id;
+        }
         localStorage.setItem(ACTIVE_SHIFT_KEY, currentId);
         return currentId;
       }
